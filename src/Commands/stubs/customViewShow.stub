@@ -1,0 +1,10 @@
+<x-master-layout name="$FEATURE$" headerName="{{ __('sidebar.$LOWER_CASE_FEATURE$') }}">
+    <x-form.layout>
+        <x-common.url-back-button />
+        <br><br>
+        <x-show.grid :isBackground='true'>
+            <x-show.text-group title="$LOWER_CASE_FEATURE$.id" :data="$data['id']" />
+            <x-show.text-group title="$LOWER_CASE_FEATURE$.name" :data="$data['name']" />
+        </x-show.grid>
+    </x-form.layout>
+</x-master-layout>

@@ -1,0 +1,9 @@
+<?php
+
+return [
+    'name' => 'Name',
+    'name_validation' => "Name is required",
+    '$FILENAME$_created' => "???? was successfully created",
+    '$FILENAME$_updated' => "???? was successfully updated",
+    '$FILENAME$_deleted' => "???? was successfully deleted",
+];

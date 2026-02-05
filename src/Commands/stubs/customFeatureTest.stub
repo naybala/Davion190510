@@ -1,0 +1,120 @@
+<?php
+//SMALL_MODEL , MODEL , PLURAL_MODEL
+namespace Tests\Feature;
+
+use BasicDashboard\Foundations\Domain\$PLURAL_MODEL$\$MODEL$;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
+
+class $MODEL$FeatureTest extends TestCase
+{
+    use DatabaseTransactions, TestingRequirement;
+
+    const ROUTE = "/????";
+    const TABLE = "????";
+
+    //UnAuthorized Test
+    public function test_prevent_non_logged_users_to_access_$SMALL_MODEL$_routes(): void
+    {
+        $$SMALL_MODEL$ = $MODEL$::first()->toArray();;
+        $$SMALL_MODEL$List = $this->get(self::ROUTE);
+        $$SMALL_MODEL$Create = $this->post(self::ROUTE);
+        $$SMALL_MODEL$Update = $this->put(self::ROUTE . "/" . $$SMALL_MODEL$['id']);
+        $$SMALL_MODEL$Edit = $this->get(self::ROUTE . "/" . $$SMALL_MODEL$['id'] . "/edit");
+        $$SMALL_MODEL$Delete = $this->delete(self::ROUTE . "/" . $$SMALL_MODEL$['id']);
+
+        $$SMALL_MODEL$List->assertStatus(302);
+        $$SMALL_MODEL$Create->assertStatus(302);
+        $$SMALL_MODEL$Update->assertStatus(302);
+        $$SMALL_MODEL$Edit->assertStatus(302);
+        $$SMALL_MODEL$Delete->assertStatus(302);
+    }
+
+    //Store Validation Test
+    public function test_$SMALL_MODEL$_cannot_store_without_name(): void
+    {
+        $this->AuthenticateUserForCustomMiddleware();
+        $request = $this->prepareData("");
+        $response = $this->post(self::ROUTE, $request);
+        $response->assertStatus(302);
+    }
+
+
+    //Store Process
+    public function test_store_process_of_$SMALL_MODEL$(): void
+    {
+        $this->AuthenticateUserForCustomMiddleware();
+        $totalNumberOf$MODEL$Before = $MODEL$::count();
+        $request = $this->prepareData("Test Name");
+        $this->post(self::ROUTE, $request);
+        $totalNumberOf$MODEL$After = $MODEL$::count();
+        $this->assertEquals($totalNumberOf$MODEL$Before + 1, $totalNumberOf$MODEL$After);
+        $this->assertDatabaseHas(self::TABLE, $this->prepareDataForCheck($request));
+    }
+
+    //Listing Process
+    public function test_list_of_$SMALL_MODEL$(): void
+    {
+        $this->AuthenticateUserForCustomMiddleware();
+        $response = $this->get(self::ROUTE);
+        $response->assertStatus(200);
+    }
+
+    //Update Process
+    public function test_update_process_of_$SMALL_MODEL$(): void
+    {
+        $this->AuthenticateUserForCustomMiddleware();
+        $oldData = $MODEL$::Create($this->prepareData("Test Name"));
+        $totalNumberOf$MODEL$Before = $MODEL$::count();
+        $updateData = $this->prepareData("Update Name");
+        $this->put(self::ROUTE . "/" . customEncoder($oldData->id), $updateData);
+        $totalNumberOf$MODEL$After = $MODEL$::count();
+        $this->assertEquals($totalNumberOf$MODEL$Before, $totalNumberOf$MODEL$After);
+        $this->assertDatabaseHas(self::TABLE, $this->prepareDataForCheck($updateData));
+    }
+
+    //Delete Validation
+    public function test_c$SMALL_MODEL$_cannot_delete_without_id(): void
+    {
+        $this->AuthenticateUserForCustomMiddleware();
+        $deleteData = $MODEL$::first();
+        $request = $this->prepareDataForDelete('');
+        $response = $this->delete(self::ROUTE . '/' . $deleteData, $request);
+        $response->assertStatus(302);
+    }
+
+    //Delete Process
+    public function test_delete_process_of_$SMALL_MODEL$(): void
+    {
+        $this->AuthenticateUserForCustomMiddleware();
+        $totalNumberOf$MODEL$Before = $MODEL$::Count();
+        $deleteData = $MODEL$::first();
+        $request = $this->prepareDataForDelete($deleteData->id);
+        $this->delete(self::ROUTE . '/' . $deleteData, $request);
+        $totalNumberOf$MODEL$After = $MODEL$::Count();
+        $this->assertEquals($totalNumberOf$MODEL$Before, $totalNumberOf$MODEL$After + 1);
+    }
+
+    //Private Section
+    private function prepareData(string $param1): array
+    {
+        return [
+            "name" => $param1,
+        ];
+    }
+
+    private function prepareDataForCheck(array $data): array
+    {
+        return [
+            'name' => isset($data['name']) ? $data['name'] : '',
+        ];
+    }
+
+    private function prepareDataForDelete(string $id): array
+    {
+        return [
+            'id' => $id != '' ? customEncoder($id) : '',
+        ];
+    }
+
+}
