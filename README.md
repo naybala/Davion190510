@@ -57,7 +57,9 @@ php artisan make:coreFeature--all
 
 php artisan make:coreFeature--logic
 
-php artisan make:coreFeature--view
+but you need to create folder first admin/demo
+
+php artisan add-fields-to-view --model=Demo
 
 ```
 

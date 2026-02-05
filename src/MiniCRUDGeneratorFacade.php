@@ -5,7 +5,7 @@ namespace Davion190510\MiniCRUDGenerator;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Davion153808\MiniCRUDGenerator\Skeleton\SkeletonClass
+ * @see \Davion190510\MiniCRUDGenerator\Skeleton\SkeletonClass
  */
 class MiniCRUDGeneratorFacade extends Facade
 {

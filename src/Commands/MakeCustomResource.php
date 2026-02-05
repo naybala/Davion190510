@@ -42,7 +42,6 @@ class MakeCustomResource extends Command
         $service = substr($serviceName, 0, -8);
         $capital = $service;
         return [
-            //namespace Garment\Web\Sizes\Services;
             'NAMESPACE' => "$projectName\\$pathName\\$folderName\\Resources",
             'ClASS' => $capital,
         ];

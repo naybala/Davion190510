@@ -26,8 +26,6 @@ class MiniCRUDGeneratorServiceProvider extends ServiceProvider
             Commands\MakeCustomValidation::class,
             Commands\MakeCustomView::class,
             Commands\MakeCustomLanguage::class,
-            Commands\MakeCustomModule::class,
-            Commands\MakeCustomRepository::class,
             Commands\MakeCustomResource::class,
             Commands\MakeCustomRoot::class,
             Commands\MakeCustomRootLogic::class,
