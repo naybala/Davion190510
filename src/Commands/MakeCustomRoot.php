@@ -68,6 +68,7 @@ class MakeCustomRoot extends Command
         $model = ucwords(Pluralizer::singular($feature));
         $smallLetterPlural = lcfirst($feature);
         $smallLetter = lcfirst($model);
+        $moduleRepoCommand = "$pathName~$nameSpace.$feature/$model";
         $controllerCommand = "{$pathName}~{$nameSpace}.{$feature}/{$model}Controller?path={$logicPath}";
         $resourceCommand = "{$pathName}~{$nameSpace}.{$feature}/{$model}Resource?path={$logicPath}";
         $serviceCommand = "{$pathName}~{$nameSpace}.{$feature}/{$model}Service?path={$logicPath}";
@@ -80,7 +81,7 @@ class MakeCustomRoot extends Command
                 break;
             default:
                 $this->moduleCmd($smallLetterPlural, $migrationAndSeeder);
-                $this->allCmd($controllerCommand, $resourceCommand, $serviceCommand, $requestCommand,$smallLetter, $logicPath);
+                $this->allCmd($moduleRepoCommand,$controllerCommand, $resourceCommand, $serviceCommand, $requestCommand,$smallLetter, $logicPath);
                 $this->featureTestCmd($model, $smallLetter, $feature, $logicPath);
                 $this->allMessageReval($smallLetter, $model, $logicPath);
         }
@@ -95,8 +96,11 @@ class MakeCustomRoot extends Command
         }
     }
 
-    private function allCmd($controllerCommand, $resourceCommand, $serviceCommand, $requestCommand, $smallLetter, $logicPath)
+    private function allCmd($moduleRepoCommand,$controllerCommand, $resourceCommand, $serviceCommand, $requestCommand, $smallLetter, $logicPath)
     {
+        $this->call("make:customModel", [
+            'name' => $moduleRepoCommand,
+        ]);
         $this->call("make:customController", [
             'name' => $controllerCommand,
         ]);

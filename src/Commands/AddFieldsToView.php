@@ -66,7 +66,7 @@ class AddFieldsToView extends Command
         }
 
         // Generate all views
-        $views = ['create', 'edit', 'show'];
+        $views = ['index', 'create', 'edit', 'show'];
         foreach ($views as $view) {
             $viewPath = resource_path("views/admin/" . Str::snake($modelName) . "/{$view}.blade.php");
 
@@ -99,6 +99,48 @@ class AddFieldsToView extends Command
         $route = $viewType === 'edit' ? "{{ route('$action', \$data['id']) }}" : "{{ route('$action') }}";
     
         $fieldComponents = '';
+        if ($viewType === 'index') {
+            $headerFields = [];
+            $bodyColumns = '';
+            foreach ($fields as $field) {
+                $name = $field['name'];
+                $type = $field['type'];
+
+                if (in_array($name, ['created_by', 'updated_by', 'deleted_by', 'deleted_at', 'password', 'remember_token', 'email_verified_at'])) {
+                    continue;
+                }
+
+                $headerFields[] = "'$name'";
+                $bodyColumns .= "                            <x-table.body-column :field=\"\$record['$name']\" limit=\"20\" />\n";
+            }
+            $headerFieldsStr = "[" . implode(', ', $headerFields) . "]";
+
+            return <<<BLADE
+<x-master-layout name="{$modelTitle}" headerName="{{ __('sidebar.{$smallLetterTitle}') }}">
+   <main class="h-full overflow-y-auto">
+        <div class="container px-1 md:px-6 mx-auto grid">
+            <div class="container md:flex justify-start md:justify-between items-start mx-auto mt-5">
+                <x-common.search keyword="{{ request()->keyword }}" />
+                <x-common.create-button route="{$smallPluralTitle}.create" permission="create {$smallPluralTitle}" />
+            </div>
+            <x-table.wrapper>
+                <x-table.header :fields="{$headerFieldsStr}" />
+                <x-table.body :checkData="count(\$data['data'])>0">
+                    @foreach (\$data['data'] as \$record)
+                        <x-table.body-row>
+{$bodyColumns}                            <x-table.action-new :id="\$record['id']" field="{$smallPluralTitle}" />
+                        </x-table.body-row>
+                    @endforeach
+                </x-table.body>
+            </x-table.wrapper>
+            <x-pagination.index route="{$smallPluralTitle}.index" :meta="\$data['meta']" />
+        </div>
+    </main>
+    @vite('resources/js/common/deleteConfirm.js') 
+</x-master-layout>
+BLADE;
+        }
+
         foreach ($fields as $field) {
             $name = $field['name'];
             $type = $field['type'];
