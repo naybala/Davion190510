@@ -22,16 +22,17 @@ class MiniCRUDGeneratorServiceProvider extends ServiceProvider
         }
         // Registering package commands.
         $this->commands([
+            Commands\AddFieldsToView::class,
             Commands\MakeCustomController::class,
-            Commands\MakeCustomValidation::class,
+            Commands\MakeCustomFeatureTest::class,
             Commands\MakeCustomLanguage::class,
+            Commands\MakeCustomModel::class,
             Commands\MakeCustomResource::class,
             Commands\MakeCustomRoot::class,
             Commands\MakeCustomRootLogic::class,
             Commands\MakeCustomRootView::class,
             Commands\MakeCustomService::class,
-            Commands\MakeCustomFeatureTest::class,
-            Commands\AddFieldsToView::class,
+            Commands\MakeCustomValidation::class,
         ]);
     }
 
