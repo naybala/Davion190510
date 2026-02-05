@@ -2,7 +2,6 @@
     "name": "davion190510/mini-crud-generator",
     "description": "Mini CRUD Generator",
     "type": "library",
-    "version": "1.0.0",
     "license": "MIT",
     "authors": [
         {
