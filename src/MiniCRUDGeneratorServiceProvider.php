@@ -24,7 +24,6 @@ class MiniCRUDGeneratorServiceProvider extends ServiceProvider
         $this->commands([
             Commands\MakeCustomController::class,
             Commands\MakeCustomValidation::class,
-            Commands\MakeCustomView::class,
             Commands\MakeCustomLanguage::class,
             Commands\MakeCustomResource::class,
             Commands\MakeCustomRoot::class,
