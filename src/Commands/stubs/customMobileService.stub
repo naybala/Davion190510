@@ -2,11 +2,12 @@
 
 namespace $NAMESPACE$;
 
-use $PROJECT_NAME$\Foundations\Domain\$FOLDER_NAME$\Repositories\$CAPITAL$Repository;
-use $PROJECT_NAME$\$PATH_NAME$\Common\BaseMobileController;
+use $PROJECT_NAME$\Foundations\Domain\$FOLDER_NAME$\$CAPITAL$;
+use App\Http\Controllers\Controller;
 use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Resources\$CAPITAL$Resource;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\ResponseFactory;
 
 /**
  *
@@ -18,33 +19,32 @@ use Illuminate\Http\JsonResponse;
  *
  */
 
-class $CLASS_NAME$ extends BaseMobileController
+class $CLASS_NAME$ extends Controller
 {
 
     public function __construct(
-        private $CAPITAL$RepositoryInterface $$CAMEL_CASE$RepositoryInterface,
+        private $CAPITAL$ $$CAMEL_CASE$,
+        private ResponseFactory $responseFactory,
     )
     {
     }
 
-    ///////////////////////////This is Method Divider///////////////////////////////////////
-
     public function index(array $request): JsonResponse
     {
-        $data = $this->$CAMEL_CASE$RepositoryInterface->get$CAPITAL$List($request);
-        $data = $CAPITAL$Resource::collection($data)->response()->getData(true);
-        return $this->sendResponse("Index success", $data);
+        $$CAMEL_CASE$List = $this->$CAMEL_CASE$
+            ->withUserRelations()
+            ->filterByKeyword($request['keyword'] ?? null)
+            ->orderByLatest()
+            ->paginate($request['paginate'] ?? config('numbers.paginate'));
+        $$CAMEL_CASE$List = $CAPITAL$Resource::collection($$CAMEL_CASE$List)->response()->getData(true);
+        return $this->responseFactory->sendSuccessResponse('Index Success', $$CAMEL_CASE$List);
     }
-
-    ///////////////////////////This is Method Divider///////////////////////////////////////
 
     public function show(string $id): JsonResponse
     {
-        $data = $this->$CAMEL_CASE$RepositoryInterface->edit($id);
-        $data= new $CAPITAL$Resource($data);
-        $data= $data->response()->getData(true)['data'];
-        return $this->sendResponse('Show success',$data);
+        $data = $this->$CAMEL_CASE$->findOrFail($id);
+        $data = new $CAPITAL$Resource($data);
+        $data = $data->response()->getData(true)['data'];
+        return $this->responseFactory->sendSuccessResponse("Show success", $data);
     }
-
-    ///////////////////////////This is Method Divider///////////////////////////////////////
 }
