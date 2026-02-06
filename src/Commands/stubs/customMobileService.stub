@@ -32,7 +32,6 @@ class $CLASS_NAME$ extends Controller
     public function index(array $request): JsonResponse
     {
         $$CAMEL_CASE$List = $this->$CAMEL_CASE$
-            ->withUserRelations()
             ->filterByKeyword($request['keyword'] ?? null)
             ->orderByLatest()
             ->paginate($request['paginate'] ?? config('numbers.paginate'));
