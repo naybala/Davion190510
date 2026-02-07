@@ -4,8 +4,10 @@ namespace $NAMESPACE$;
 
 use App\Http\Controllers\Controller;
 use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Services\$CAPITAL$Service;
+use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Resources\$CAPITAL$Resource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\ResponseFactory;
 
 
 
@@ -23,19 +25,25 @@ use Illuminate\Http\Request;
 class $CLASS_NAME$ extends Controller
 {
     public function __construct(
-        private $CAPITAL$Service $$CAMEL_CASE$Service
+        private $CAPITAL$Service $$CAMEL_CASE$Service,
+        private ResponseFactory $responseFactory
     ) {
     }
 
     public function index(Request $request): JsonResponse
     {
-        return $this->$CAMEL_CASE$Service->index($request->all());
+        $$CAMEL_CASE$List = $this->$CAMEL_CASE$Service->paginate($request->all());
+        $$CAMEL_CASE$List = $CAPITAL$Resource::collection($$CAMEL_CASE$List)->response()->getData(true);
+        return $this->responseFactory->sendSuccessResponse('Index Success', $$CAMEL_CASE$List);
     }
 
 
     public function show(string $id): JsonResponse
     {
-        return $this->$CAMEL_CASE$Service->show($id);
+        $$CAMEL_CASE$ = $this->$CAMEL_CASE$Service->findOrFail($id);
+        $$CAMEL_CASE$ = new $CAPITAL$Resource($$CAMEL_CASE$);
+        $$CAMEL_CASE$ = $$CAMEL_CASE$->response()->getData(true)['data'];
+        return $this->responseFactory->sendSuccessResponse("Show success", $$CAMEL_CASE$);
     }
 
 }

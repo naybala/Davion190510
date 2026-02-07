@@ -21,94 +21,50 @@ use Exception;
  *
  */
 
-class $CLASS_NAME$ extends BaseController
+class $CLASS_NAME$
 {
-    const VIEW = 'admin.$CAMEL_CASE$';
-    const ROUTE = '$CAMEL_CASE$s';
-    const LANG_PATH = "$CAMEL_CASE$.$CAMEL_CASE$";
-
     public function __construct(
         private $CAPITAL$ $$CAMEL_CASE$,
-        private ResponseFactory $responseFactory
     )
     {
     }
 
-    public function index(array $request): View
+    public function paginate(array $request)
     {
-        $$CAMEL_CASE$List = $this->$CAMEL_CASE$
+        return $this->$CAMEL_CASE$
             ->filterByKeyword($request['keyword'] ?? null)
             ->orderByLatest()
             ->paginate($request['paginate'] ?? config('numbers.paginate'));
-
-        $$CAMEL_CASE$List = $CAPITAL$Resource::collection($$CAMEL_CASE$List)->response()->getData(true);
-        return $this->responseFactory->successView(self::VIEW.".index", $$CAMEL_CASE$List);
     }
 
-    public function create(): View
+    public function store(array $request): $CAPITAL$
     {
-        return view(self::VIEW.'.create');
-    }
-
-    public function store($request): RedirectResponse
-    {
-        try {
-            \DB::beginTransaction();
+        return \DB::transaction(function () use ($request) {
             $request['created_by'] = Auth::id();
-            $this->$CAMEL_CASE$->create($request);
-            \DB::commit();
-            return $this->responseFactory->successIndexRedirect(self::ROUTE, __(self::LANG_PATH . '_created'));
-        } catch (Exception $e) {
-            \DB::rollBack();
-            return $this->responseFactory->redirectBackWithError(null, $e->getMessage());
-        }
+            return $this->$CAMEL_CASE$->create($request);
+        });
     }
 
-    public function edit(string $id): View | RedirectResponse
+    public function findOrFail(string $id): $CAPITAL$
     {
-        $id = customDecoder($id);
-        $$CAMEL_CASE$ = $this->$CAMEL_CASE$->findOrFail($id);
-        $$CAMEL_CASE$ = new $CAPITAL$Resource($$CAMEL_CASE$);
-        $$CAMEL_CASE$ = $$CAMEL_CASE$->response()->getData(true)['data'];
-        return $this->responseFactory->successView(self::VIEW . ".edit", $$CAMEL_CASE$);
+        return $this->$CAMEL_CASE$->findOrFail($id);
     }
 
-    public function show(string $id): View | RedirectResponse
+    public function update(array $request, string $id): $CAPITAL$
     {
-        $id = customDecoder($id);
-        $$CAMEL_CASE$ = $this->$CAMEL_CASE$->findOrFail($id);
-        $$CAMEL_CASE$ = new $CAPITAL$Resource($$CAMEL_CASE$);
-        $$CAMEL_CASE$ = $$CAMEL_CASE$->response()->getData(true)['data'];
-        return $this->responseFactory->successView(self::VIEW . '.show', $$CAMEL_CASE$);
-    }
-
-    public function update($request, string $id): RedirectResponse
-    {
-         try {
-            \DB::beginTransaction();
+        return \DB::transaction(function () use ($request, $id) {
             $decodedId = customDecoder($id);
             $$CAMEL_CASE$ = $this->$CAMEL_CASE$->findOrFail($decodedId);
             $$CAMEL_CASE$->update($request);
-            \DB::commit();
-            return $this->responseFactory->successShowRedirect(self::ROUTE, $id, __(self::LANG_PATH . '_updated'));
-        } catch (Exception $e) {
-            \DB::rollBack();
-            return $this->responseFactory->redirectBackWithError($e->getMessage());
-        }
+            return $$CAMEL_CASE$;
+        });
     }
 
-    public function destroy($request): RedirectResponse
+    public function delete(string $id): void
     {
-         try {
-            \DB::beginTransaction();
-            $id = customDecoder($request['id']);
-            $this->$CAMEL_CASE$->destroy($id);
-            \DB::commit();
-            return $this->responseFactory->successIndexRedirect(self::ROUTE, __(self::LANG_PATH . '_deleted'));
-        } catch (Exception $e) {
-            \DB::rollBack();
-            return $this->responseFactory->redirectBackWithError($e->getMessage());
-        }
+        \DB::transaction(function () use ($id) {
+            $decodedId = customDecoder($id);
+            $this->$CAMEL_CASE$->destroy($decodedId);
+        });
     }
-
 }

@@ -3,6 +3,7 @@
 namespace $NAMESPACE$;
 
 use $PROJECT_NAME$\$PATH_NAME$\Common\BaseController;
+use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Resources\$CAPITAL$Resource;
 use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Services\$CAPITAL$Service;
 use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Validation\Store$CAPITAL$Request;
 use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Validation\Update$CAPITAL$Request;
@@ -10,6 +11,8 @@ use $PROJECT_NAME$\$PATH_NAME$\$FOLDER_NAME$\Validation\Delete$CAPITAL$Request;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\ResponseFactory;
+
 
 /**
  *
@@ -23,44 +26,75 @@ use Illuminate\Http\RedirectResponse;
 
 class $CLASS_NAME$ extends BaseController
 {
+    const VIEW = 'admin.$CAMEL_CASE$';
+    const ROUTE = '$CAMEL_CASE$s';
+    const LANG_PATH = "$CAMEL_CASE$.$CAMEL_CASE$";
+
     public function __construct(
-        private $CAPITAL$Service $$CAMEL_CASE$Service
+        private $CAPITAL$Service $$CAMEL_CASE$Service,
+        private ResponseFactory $responseFactory
     ) {
     }
 
     public function index(Request $request): View
     {
-        return $this->$CAMEL_CASE$Service->index($request->all());
+        $$CAMEL_CASE$List = $this->$CAMEL_CASE$Service->paginate($request->all());
+        $$CAMEL_CASE$List = $CAPITAL$Resource::collection($$CAMEL_CASE$List)->response()->getData(true);
+        return $this->responseFactory->successView(self::VIEW . '.index', $$CAMEL_CASE$List);
     }
 
     public function create(): View
     {
-        return $this->$CAMEL_CASE$Service->create();
+        return view(self::VIEW . '.create');
     }
 
     public function store(Store$CAPITAL$Request $request): RedirectResponse
     {
-        return $this->$CAMEL_CASE$Service->store($request->validated());
+        try {
+            $this->$CAMEL_CASE$Service->store($request->validated());
+            return $this->responseFactory->successIndexRedirect(self::ROUTE, __(self::LANG_PATH . '_created'));
+        } catch (\Throwable $e) {
+            $this->LogError("$CAPITAL$ store failed", $e);
+            return $this->responseFactory->redirectBackWithError($e->getMessage());
+        }
     }
 
     public function edit(string $id): View | RedirectResponse
     {
-        return $this->$CAMEL_CASE$Service->edit($id);
+        $decodedId = customDecoder($id);
+        $$CAMEL_CASE$ = $this->$CAMEL_CASE$Service->findOrFail($decodedId);
+        $$CAMEL_CASE$ = new $CAPITAL$Resource($$CAMEL_CASE$);
+        $$CAMEL_CASE$ = $$CAMEL_CASE$->response()->getData(true)['data'];
+        return $this->responseFactory->successView(self::VIEW . ".edit", $$CAMEL_CASE$);
     }
 
     public function show(string $id): View | RedirectResponse
     {
-        return $this->$CAMEL_CASE$Service->show($id);
+        $$CAMEL_CASE$ = $this->$CAMEL_CASE$Service->findOrFail($id);
+        $$CAMEL_CASE$ = new $CAPITAL$Resource($$CAMEL_CASE$);
+        $$CAMEL_CASE$ = $$CAMEL_CASE$->response()->getData(true)['data'];
+        return $this->responseFactory->successView(self::VIEW . '.show', $$CAMEL_CASE$);
     }
 
     public function update(Update$CAPITAL$Request $request, string $id): RedirectResponse
     {
-        return $this->$CAMEL_CASE$Service->update($request->validated(), $id);
+        try {
+            $this->$CAMEL_CASE$Service->update($request->validated(), $id);
+            return $this->responseFactory->successShowRedirect(self::ROUTE, $id, __(self::LANG_PATH . '_updated'));
+        } catch (\Throwable $e) {
+            $this->LogError("$CAPITAL$ update failed", $e);
+            return $this->responseFactory->redirectBackWithError($e->getMessage());
+        }
     }
 
     public function destroy(Delete$CAPITAL$Request $request): RedirectResponse
     {
-        return $this->$CAMEL_CASE$Service->destroy($request->validated());
+        try {
+            $this->$CAMEL_CASE$Service->delete($request->validated()['id']);
+            return $this->responseFactory->successIndexRedirect(self::ROUTE, __(self::LANG_PATH . '_deleted'));
+        } catch (\Throwable $e) {
+            $this->LogError("$CAPITAL$ destroy failed", $e);
+            return $this->responseFactory->redirectBackWithError($e->getMessage());
+        }
     }
-
 }

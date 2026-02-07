@@ -50,7 +50,7 @@ class MakeCustomService extends Command
         $folderName = $this->makeCustomCommon->filterFolderName($this->getSingularClassName($this->argument('name')));
         $serviceName = $this->makeCustomCommon->filterMainName($this->getSingularClassName($this->argument('name')));
         $pathName = $this->makeCustomCommon->filterApiName($this->getSingularClassName($this->argument('name')));
-        $service = substr($serviceName, 0, -7);
+        $service = substr($serviceName, 0, -7); // Remove "Service"
         $capital = $service;
         $serviceCamel = lcfirst($capital);
 

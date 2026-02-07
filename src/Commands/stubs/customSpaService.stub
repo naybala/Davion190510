@@ -19,31 +19,24 @@ use Illuminate\Routing\ResponseFactory;
  *
  */
 
-class $CLASS_NAME$ extends Controller
+class $CLASS_NAME$
 {
-
     public function __construct(
         private $CAPITAL$ $$CAMEL_CASE$,
-        private ResponseFactory $responseFactory,
     )
     {
     }
 
-    public function index(array $request): JsonResponse
+    public function paginate(array $request)
     {
-        $$CAMEL_CASE$List = $this->$CAMEL_CASE$
+        return $this->$CAMEL_CASE$
             ->filterByKeyword($request['keyword'] ?? null)
             ->orderByLatest()
             ->paginate($request['paginate'] ?? config('numbers.paginate'));
-        $$CAMEL_CASE$List = $CAPITAL$Resource::collection($$CAMEL_CASE$List)->response()->getData(true);
-        return $this->responseFactory->sendSuccessResponse('Index Success', $$CAMEL_CASE$List);
     }
 
-    public function show(string $id): JsonResponse
+    public function findOrFail(string $id): $CAPITAL$
     {
-        $data = $this->$CAMEL_CASE$->findOrFail($id);
-        $data = new $CAPITAL$Resource($data);
-        $data = $data->response()->getData(true)['data'];
-        return $this->responseFactory->sendSuccessResponse("Show success", $data);
+        return $this->$CAPITAL$->findOrFail($id);
     }
 }

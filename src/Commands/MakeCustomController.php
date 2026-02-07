@@ -49,16 +49,16 @@ class MakeCustomController extends Command
         $folderName = $this->makeCustomCommon->filterFolderName($this->getSingularClassName($this->argument('name')));
         $controllerName = $this->makeCustomCommon->filterMainName($this->getSingularClassName($this->argument('name')));
         $pathName = $this->makeCustomCommon->filterApiName($this->getSingularClassName($this->argument('name')));
-        $controller = substr($controllerName, 0, -10);
+        $controller = substr($controllerName, 0, -10); // Remove "Controller"
         $capital = $controller;
-        $controller = lcfirst($capital);
+        $controllerCamel = lcfirst($capital);
         return [
             'NAMESPACE' => "$projectName\\$pathName\\$folderName\\Controllers",
             'CLASS_NAME' => $controllerName,
             'FOLDER_NAME' => $folderName,
             'PROJECT_NAME' => $projectName,
             'PATH_NAME' => $pathName,
-            'CAMEL_CASE' => $controller,
+            'CAMEL_CASE' => $controllerCamel,
             'CAPITAL' => $capital,
         ];
     }
